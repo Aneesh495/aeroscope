@@ -1,0 +1,33 @@
+# Rust
+/target
+**/target
+Cargo.lock.bak
+
+# Node / web
+node_modules
+web/dist
+web/node_modules
+.vite
+*.tsbuildinfo
+
+# Agent-private continuation state and accounting (never committed)
+.agent-local/
+
+# Evidence bundles and large artifacts
+/evidence
+/runs
+*.pcap
+*.parquet.tmp
+
+# Env / secrets
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
