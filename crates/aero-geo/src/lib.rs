@@ -25,7 +25,7 @@ pub use antimeridian::{normalize_lon_deg, crosses_antimeridian, split_at_antimer
 
 /// A geodetic position. Longitude normalized to [-180,180), latitude in
 /// [-90,90]. `alt_m` is geometric height above the ellipsoid in metres.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Geodetic {
     pub lat_deg: f64,
     pub lon_deg: f64,
