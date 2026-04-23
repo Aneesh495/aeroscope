@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "crates/aero-geo",
     "crates/aero-types",
+    "crates/aero-ingest",
 ]
 
 [workspace.package]

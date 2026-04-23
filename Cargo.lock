@@ -10,6 +10,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-ingest"
+version = "0.1.0"
+dependencies = [
+ "aero-geo",
+ "aero-types",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "aero-types"
 version = "0.1.0"
 dependencies = [
