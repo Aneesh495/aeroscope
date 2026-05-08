@@ -4,6 +4,7 @@ members = [
     "crates/aero-geo",
     "crates/aero-types",
     "crates/aero-ingest",
+    "crates/aero-log",
 ]
 
 [workspace.package]
