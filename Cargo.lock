@@ -3,6 +3,16 @@
 version = 4
 
 [[package]]
+name = "aero-fusion"
+version = "0.1.0"
+dependencies = [
+ "aero-geo",
+ "aero-types",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "aero-geo"
 version = "0.1.0"
 dependencies = [
