@@ -43,6 +43,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-spatial"
+version = "0.1.0"
+dependencies = [
+ "aero-geo",
+ "aero-types",
+ "serde",
+]
+
+[[package]]
 name = "aero-types"
 version = "0.1.0"
 dependencies = [
