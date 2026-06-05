@@ -1,0 +1,13 @@
+[package]
+name = "aero-stream"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+aero-geo = { path = "../aero-geo" }
+aero-types = { path = "../aero-types" }
+aero-fusion = { path = "../aero-fusion" }
+aero-spatial = { path = "../aero-spatial" }
+serde = { workspace = true }
+serde_json = { workspace = true }
