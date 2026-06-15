@@ -52,6 +52,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-server"
+version = "0.1.0"
+dependencies = [
+ "aero-fusion",
+ "aero-geo",
+ "aero-ingest",
+ "aero-loadgen",
+ "aero-log",
+ "aero-spatial",
+ "aero-stream",
+ "aero-types",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "aero-spatial"
 version = "0.1.0"
 dependencies = [

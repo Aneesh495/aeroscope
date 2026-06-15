@@ -1,0 +1,21 @@
+[package]
+name = "aero-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "aeroscope"
+path = "src/main.rs"
+
+[dependencies]
+aero-geo = { path = "../aero-geo" }
+aero-types = { path = "../aero-types" }
+aero-ingest = { path = "../aero-ingest" }
+aero-log = { path = "../aero-log" }
+aero-fusion = { path = "../aero-fusion" }
+aero-spatial = { path = "../aero-spatial" }
+aero-stream = { path = "../aero-stream" }
+aero-loadgen = { path = "../aero-loadgen" }
+serde = { workspace = true }
+serde_json = { workspace = true }

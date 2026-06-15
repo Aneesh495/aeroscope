@@ -101,13 +101,21 @@ impl LoadGenerator {
             );
             // ICAO24 derived deterministically from the index.
             let bytes = [(i >> 16) as u8, (i >> 8) as u8, (i as u8).max(1)];
+            let speed_mps = rng.range(200.0, 260.0);
+            // Leg duration is derived from the real great-circle distance and
+            // the cruise speed so the aircraft moves at a physically plausible
+            // rate; random endpoints with a fixed duration would otherwise imply
+            // impossible speeds and the fusion plausibility check would (rightly)
+            // reject almost everything.
+            let dist_m = aero_geo::haversine_m(&origin, &dest).max(1.0);
+            let leg_duration_s = (dist_m / speed_mps).max(600.0);
             fleet.push(SyntheticAircraft {
                 icao24: Icao24(bytes),
                 origin,
                 dest,
                 cruise_alt_m: rng.range(8000.0, 12000.0),
-                speed_mps: rng.range(200.0, 260.0),
-                leg_duration_s: rng.range(1800.0, 7200.0),
+                speed_mps,
+                leg_duration_s,
             });
         }
         Self {
