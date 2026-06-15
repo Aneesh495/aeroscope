@@ -31,6 +31,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-loadgen"
+version = "0.1.0"
+dependencies = [
+ "aero-geo",
+ "aero-types",
+ "serde",
+]
+
+[[package]]
 name = "aero-log"
 version = "0.1.0"
 dependencies = [

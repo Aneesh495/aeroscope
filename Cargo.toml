@@ -8,6 +8,7 @@ members = [
     "crates/aero-fusion",
     "crates/aero-spatial",
     "crates/aero-stream",
+    "crates/aero-loadgen",
 ]
 
 [workspace.package]
