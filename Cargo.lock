@@ -20,6 +20,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-history"
+version = "0.1.0"
+dependencies = [
+ "aero-geo",
+ "aero-types",
+ "serde",
+]
+
+[[package]]
 name = "aero-ingest"
 version = "0.1.0"
 dependencies = [

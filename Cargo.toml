@@ -11,6 +11,7 @@ members = [
     "crates/aero-loadgen",
     "crates/aero-server",
     "crates/aero-verify",
+    "crates/aero-history",
 ]
 
 [workspace.package]
