@@ -1,0 +1,24 @@
+[package]
+name = "aero-verify"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "aero-campaign"
+path = "src/bin/campaign.rs"
+
+[[bin]]
+name = "aero-verify"
+path = "src/bin/verify.rs"
+
+[dependencies]
+aero-geo = { path = "../aero-geo" }
+aero-types = { path = "../aero-types" }
+aero-fusion = { path = "../aero-fusion" }
+aero-spatial = { path = "../aero-spatial" }
+aero-stream = { path = "../aero-stream" }
+aero-loadgen = { path = "../aero-loadgen" }
+aero-log = { path = "../aero-log" }
+serde = { workspace = true }
+serde_json = { workspace = true }

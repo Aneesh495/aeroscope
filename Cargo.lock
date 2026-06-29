@@ -99,6 +99,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aero-verify"
+version = "0.1.0"
+dependencies = [
+ "aero-fusion",
+ "aero-geo",
+ "aero-loadgen",
+ "aero-log",
+ "aero-spatial",
+ "aero-stream",
+ "aero-types",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bitflags"
 version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
