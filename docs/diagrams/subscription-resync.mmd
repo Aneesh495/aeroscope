@@ -1,0 +1,17 @@
+%% Subscription resynchronization on reconnect (A10).
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: Subscribe(versions, viewport)
+  S->>C: Welcome(version, sub_id)
+  S->>C: Snapshot(snapshot_id=1, seq=1)
+  S->>C: Delta(base=1, seq=2)
+  S->>C: Delta(base=1, seq=3)
+  Note over C: connection drops, holds snapshot 1 seq 3
+  C->>S: Resume(last_snapshot_id=1, last_seq=3)
+  alt snapshot still current
+    S->>C: Delta(base=1, seq=4)
+  else snapshot changed
+    S->>C: Snapshot(snapshot_id=2, seq=N)
+    Note over C: discard old state, never apply old delta to new snapshot
+  end

@@ -1,0 +1,19 @@
+%% One observation's complete path through Aeroscope.
+flowchart TD
+  A[Source record<br/>readsb JSON or OpenSky states] --> B[Adapter<br/>parse, units, explicit nulls, attribution]
+  B --> C{Structurally valid?}
+  C -- no --> Q[Quarantine<br/>retain raw, reason]
+  C -- yes --> D[Durable log append<br/>CRC framed]
+  D --> E{Duplicate dedup key?}
+  E -- yes --> X[Drop idempotently<br/>count log_duplicates]
+  E -- no --> F[Fusion engine]
+  F --> G{Older than watermark - lateness?}
+  G -- yes --> L[Late revision<br/>retain as evidence]
+  G -- no --> H{Plausible?}
+  H -- no --> R[Reject<br/>retain conflicting evidence]
+  H -- yes --> I[Conflict selection<br/>trust then recency]
+  I --> J[Advance watermark<br/>update fused state]
+  J --> K[Spatial grid upsert]
+  K --> M[Viewport subscription<br/>snapshot or delta]
+  M --> N[Client TrackStore<br/>resync invariant]
+  N --> O[Globe render<br/>freshness label]

@@ -1,0 +1,21 @@
+%% Outage and crash recovery (A04, G08).
+flowchart LR
+  subgraph Ingest
+    A[Source outage detected<br/>circuit breaker opens] --> B[Status surfaced to UI<br/>bounded retry with backoff]
+    B --> C[Source returns<br/>breaker half-open then closed]
+  end
+  subgraph Storage
+    D[Process killed mid-append] --> E[Reopen log]
+    E --> F[Scan frames from start]
+    F --> G{Torn tail?}
+    G -- yes --> H[Truncate to last intact frame]
+    G -- no --> I[Keep all frames]
+    H --> J[Rebuild dedup index]
+    I --> J
+  end
+  subgraph Clients
+    K[Client reconnects] --> L[Resume with last snapshot id + seq]
+    L --> M{Snapshot current?}
+    M -- yes --> N[Continue with deltas]
+    M -- no --> O[Fresh snapshot]
+  end

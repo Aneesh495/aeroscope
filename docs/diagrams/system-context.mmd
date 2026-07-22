@@ -1,0 +1,31 @@
+%% System context: the pieces and who owns what.
+flowchart TB
+  subgraph Sources
+    RX[Owned readsb receiver]
+    OS[OpenSky REST<br/>disabled without agreement]
+    SYN[Synthetic load generator<br/>labeled synthetic]
+  end
+  subgraph Backend[Rust backend]
+    ING[aero-ingest adapters]
+    LOG[aero-log durable log]
+    FUS[aero-fusion engine]
+    SPA[aero-spatial index]
+    STR[aero-stream protocol]
+    HIS[aero-history + replay]
+  end
+  subgraph Frontend[Web]
+    GL[Cesium globe]
+    DR[Detail drawer]
+    TL[Timeline]
+  end
+  VER[aero-verify<br/>independent checks]
+
+  RX --> ING
+  OS --> ING
+  SYN --> ING
+  ING --> LOG --> FUS --> SPA --> STR --> GL
+  LOG --> HIS --> STR
+  STR --> DR
+  STR --> TL
+  LOG -.raw records.-> VER
+  FUS -.counters.-> VER

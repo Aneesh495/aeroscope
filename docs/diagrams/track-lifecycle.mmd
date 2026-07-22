@@ -1,0 +1,19 @@
+%% Track lifecycle states and the age-driven transitions (A06).
+stateDiagram-v2
+  [*] --> Observed: first observation
+  Observed --> Observed: fresh observation (age <= observed window)
+  Observed --> Extrapolated: age past observed window
+  Extrapolated --> Observed: new observation arrives
+  Extrapolated --> Stale: age past extrapolation horizon
+  Stale --> Observed: new observation arrives
+  Stale --> Lost: age past stale horizon
+  Lost --> Observed: aircraft reappears
+  Observed --> Ended: landed and stopped reporting
+  Stale --> Ended: no return within policy
+  Ended --> [*]
+
+  note right of Extrapolated
+    Position is extrapolated from the last
+    known velocity for at most the declared
+    horizon. It is never extended silently.
+  end note

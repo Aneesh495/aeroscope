@@ -1,0 +1,19 @@
+%% Source conflict resolution: retain evidence, select, never average (A05).
+flowchart TD
+  A[New observation for aircraft X] --> B{Track has a selected source?}
+  B -- no --> C[Select this source<br/>reason = SingleSource]
+  B -- yes --> D{Same source as current?}
+  D -- yes --> E[Keep source<br/>reason = BetterRecency]
+  D -- no --> F{Compare declared trust}
+  F -- new higher --> G[Switch to new source<br/>reason = HigherTrust]
+  F -- new lower --> H[Keep current source<br/>reason = HigherTrust]
+  F -- equal --> I{Newer event time?}
+  I -- yes --> J[Switch to new source<br/>reason = BetterRecency]
+  I -- no --> K[Keep current source]
+  C --> Z[Both/all positions retained as Evidence]
+  E --> Z
+  G --> Z
+  H --> Z
+  J --> Z
+  K --> Z
+  Z --> Y[Position is one source's value, never an average of datums]

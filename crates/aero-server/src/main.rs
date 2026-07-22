@@ -7,12 +7,10 @@
 //! The network transport and Cesium frontend connect to this pipeline; this
 //! binary is the runnable backend slice and the basis for the make targets.
 
-mod pipeline;
-
 use aero_fusion::SourceTrust;
 use aero_loadgen::{LoadGenConfig, LoadGenerator};
+use aero_server::Pipeline;
 use aero_spatial::Viewport;
-use pipeline::Pipeline;
 use std::env;
 
 fn main() {
