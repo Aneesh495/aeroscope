@@ -55,7 +55,10 @@ mod tests {
 
     #[test]
     fn error_messages_are_descriptive() {
-        let e = IngestError::OutOfRange { field: "lat", detail: "91".into() };
+        let e = IngestError::OutOfRange {
+            field: "lat",
+            detail: "91".into(),
+        };
         assert!(e.to_string().contains("lat"));
     }
 }

@@ -32,8 +32,8 @@ fn run_demo() {
     let tmp = env::temp_dir().join("aeroscope-demo.aero");
     let _ = std::fs::remove_file(&tmp);
     let trust = SourceTrust::default().with("synthetic", 5);
-    let mut pipe = Pipeline::open(tmp.to_str().unwrap(), trust, /*is_replay=*/ true)
-        .expect("open pipeline");
+    let mut pipe =
+        Pipeline::open(tmp.to_str().unwrap(), trust, /*is_replay=*/ true).expect("open pipeline");
 
     let mut gen = LoadGenerator::new(LoadGenConfig {
         aircraft_count: 2_000,
@@ -79,7 +79,7 @@ fn run_demo() {
 
     println!("Aeroscope demo (synthetic replay, labeled synthetic; not a live feed)");
     println!("  ticks run            : {ticks}");
-    println!("  wall time            : {:.2?}", elapsed);
+    println!("  wall time            : {elapsed:.2?}");
     println!("  observations accepted: {}", pipe.metrics.accepted);
     println!("  logged (durable)     : {}", pipe.metrics.logged);
     println!("  log duplicates       : {}", pipe.metrics.log_duplicates);
@@ -98,13 +98,21 @@ fn run_demo() {
     // at least every injected exact duplicate; it also catches additional
     // dedup-key collisions from reordered records that share an event time, so
     // the relationship is >=, not ==.
-    assert!(pipe.metrics.log_duplicates >= gen.duplicates,
-        "the log must idempotently catch at least every injected duplicate");
+    assert!(
+        pipe.metrics.log_duplicates >= gen.duplicates,
+        "the log must idempotently catch at least every injected duplicate"
+    );
     // Durability check: accepted == logged + duplicates (nothing vanishes).
-    assert_eq!(pipe.metrics.accepted, pipe.metrics.logged + pipe.metrics.log_duplicates,
-        "every accepted observation is either logged or a caught duplicate");
+    assert_eq!(
+        pipe.metrics.accepted,
+        pipe.metrics.logged + pipe.metrics.log_duplicates,
+        "every accepted observation is either logged or a caught duplicate"
+    );
     println!("  OK: accepted == logged + duplicates (no silent loss)");
-    println!("  OK: log caught all {} injected duplicates (+ reorder collisions)", gen.duplicates);
+    println!(
+        "  OK: log caught all {} injected duplicates (+ reorder collisions)",
+        gen.duplicates
+    );
     let _ = std::fs::remove_file(&tmp);
 }
 
@@ -114,8 +122,12 @@ fn run_doctor() {
     println!("  arch           : {}", env::consts::ARCH);
     println!("  os             : {}", env::consts::OS);
     println!("  pointer width  : {} bits", usize::BITS);
-    println!("  parallelism    : {}", std::thread::available_parallelism()
-        .map(|n| n.get()).unwrap_or(0));
+    println!(
+        "  parallelism    : {}",
+        std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(0)
+    );
     // The full 50k/10k-ups/200-sub profile needs substantial resources; we only
     // report, never silently substitute a smaller workload.
     println!("note: the full acceptance profile (50,000 tracks, 10,000 updates/s,");

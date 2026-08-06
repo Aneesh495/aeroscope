@@ -30,7 +30,10 @@ impl LoggedObservation {
     pub const CURRENT_SCHEMA: u16 = 1;
 
     pub fn new(observation: Observation) -> Self {
-        Self { schema_version: Self::CURRENT_SCHEMA, observation }
+        Self {
+            schema_version: Self::CURRENT_SCHEMA,
+            observation,
+        }
     }
 
     pub fn dedup_key(&self) -> DedupKey {

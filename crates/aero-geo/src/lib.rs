@@ -13,15 +13,15 @@
 //!   ellipsoid in metres. Barometric altitude is a different quantity and is
 //!   never silently substituted here (see `aero-types`).
 
-pub mod ellipsoid;
-pub mod ecef;
-pub mod distance;
 pub mod antimeridian;
+pub mod distance;
+pub mod ecef;
+pub mod ellipsoid;
 
+pub use antimeridian::{crosses_antimeridian, normalize_lon_deg, split_at_antimeridian};
+pub use distance::{haversine_m, initial_bearing_deg, interpolate_great_circle, vincenty_m};
+pub use ecef::{ecef_to_geodetic, geodetic_to_ecef, Ecef};
 pub use ellipsoid::Wgs84;
-pub use ecef::{geodetic_to_ecef, ecef_to_geodetic, Ecef};
-pub use distance::{haversine_m, vincenty_m, initial_bearing_deg, interpolate_great_circle};
-pub use antimeridian::{normalize_lon_deg, crosses_antimeridian, split_at_antimeridian};
 
 /// A geodetic position. Longitude normalized to [-180,180), latitude in
 /// [-90,90]. `alt_m` is geometric height above the ellipsoid in metres.

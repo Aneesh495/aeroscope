@@ -14,9 +14,7 @@
 //! snapshot. A delta is only ever sent for the matching base, so an old delta
 //! can never be applied to a newer snapshot.
 
-use crate::protocol::{
-    Delta, ServerMessage, Snapshot, SnapshotId, Seq, TrackWire,
-};
+use crate::protocol::{Delta, Seq, ServerMessage, Snapshot, SnapshotId, TrackWire};
 use std::collections::HashMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -171,10 +169,16 @@ mod tests {
     fn sequence_numbers_are_monotonic() {
         let mut s = Subscription::new(1, 1, 100, 1000);
         let snap = s.make_snapshot(vec![]);
-        let s1 = match snap { ServerMessage::Snapshot(sn) => sn.seq, _ => panic!() };
+        let s1 = match snap {
+            ServerMessage::Snapshot(sn) => sn.seq,
+            _ => panic!(),
+        };
         s.enqueue_upsert(track("a", 0.0));
         let d = s.flush().unwrap();
-        let s2 = match d { ServerMessage::Delta(d) => d.seq, _ => panic!() };
+        let s2 = match d {
+            ServerMessage::Delta(d) => d.seq,
+            _ => panic!(),
+        };
         assert!(s2 > s1);
     }
 
@@ -238,7 +242,7 @@ mod tests {
         let mut s = Subscription::new(1, 1, 100, 1000);
         s.make_snapshot(vec![]); // snapshot id 1
         s.make_snapshot(vec![]); // snapshot id 2 (e.g. after a viewport change)
-        // A client holding snapshot 1 may not resume with deltas.
+                                 // A client holding snapshot 1 may not resume with deltas.
         assert!(!s.can_resume_with_deltas(1));
         assert!(s.can_resume_with_deltas(2));
     }

@@ -102,7 +102,10 @@ mod tests {
         let prev = Geodetic::new(51.0, 0.0, 10000.0);
         // Half the planet in one second.
         let o = obs_at(-30.0, 150.0, 2_000);
-        assert_eq!(check(Some(prev), Some(1_000), &o), Plausibility::ImpossibleJump);
+        assert_eq!(
+            check(Some(prev), Some(1_000), &o),
+            Plausibility::ImpossibleJump
+        );
     }
 
     #[test]

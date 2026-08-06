@@ -76,8 +76,8 @@ pub fn vincenty_m(a: &Geodetic, b: &Geodetic) -> Option<f64> {
                             + c * cos_sigma * (-1.0 + 2.0 * cos_2sigma_m * cos_2sigma_m)));
         if (lambda - lambda_prev).abs() < 1e-12 {
             let u_sq = cos_sq_alpha * Wgs84::ep2();
-            let big_a = 1.0
-                + u_sq / 16384.0 * (4096.0 + u_sq * (-768.0 + u_sq * (320.0 - 175.0 * u_sq)));
+            let big_a =
+                1.0 + u_sq / 16384.0 * (4096.0 + u_sq * (-768.0 + u_sq * (320.0 - 175.0 * u_sq)));
             let big_b = u_sq / 1024.0 * (256.0 + u_sq * (-128.0 + u_sq * (74.0 - 47.0 * u_sq)));
             let delta_sigma = big_b
                 * sin_sigma

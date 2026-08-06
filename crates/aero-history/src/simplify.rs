@@ -76,8 +76,8 @@ pub fn max_deviation_m(points: &[Geodetic], kept: &[usize]) -> f64 {
     let mut max_d = 0.0f64;
     for w in kept.windows(2) {
         let (a, b) = (points[w[0]], points[w[1]]);
-        for i in w[0]..=w[1] {
-            let d = point_to_segment_m(&points[i], &a, &b);
+        for p in &points[w[0]..=w[1]] {
+            let d = point_to_segment_m(p, &a, &b);
             max_d = max_d.max(d);
         }
     }
@@ -110,7 +110,10 @@ mod tests {
             .map(|i| Geodetic::new(0.0, i as f64, 10000.0))
             .collect();
         let kept = simplify_indices(&pts, 100.0);
-        assert!(kept.len() > 2, "long arc should retain curvature, got {kept:?}");
+        assert!(
+            kept.len() > 2,
+            "long arc should retain curvature, got {kept:?}"
+        );
     }
 
     #[test]

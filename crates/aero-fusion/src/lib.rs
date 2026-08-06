@@ -13,9 +13,7 @@ pub mod lifecycle;
 pub mod plausibility;
 pub mod segmentation;
 
-pub use engine::{
-    Evidence, FusedState, FusionEngine, FusionOutcome, SelectionReason, SourceTrust,
-};
+pub use engine::{Evidence, FusedState, FusionEngine, FusionOutcome, SelectionReason, SourceTrust};
 pub use lifecycle::{LifecycleConfig, TrackState};
 pub use plausibility::{check as check_plausibility, Plausibility};
 pub use segmentation::{segment, FlightLeg, LegBoundaryCause, SegmentationConfig};

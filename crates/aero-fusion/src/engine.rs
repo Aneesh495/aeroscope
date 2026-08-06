@@ -178,20 +178,24 @@ impl FusionEngine {
         }
 
         // Conflict selection against the current track at a close event time.
-        let (selected_source, reason) =
-            self.select(prev.map(|t| t), &evidence, event_ms);
+        let (selected_source, reason) = self.select(prev, &evidence, event_ms);
 
-        let entry = self.tracks.entry(obs.icao24).or_insert_with(|| TrackInternal {
-            position: None,
-            event_time_ms: event_ms,
-            selected_source: None,
-            selection_reason: SelectionReason::None,
-            evidence: Vec::new(),
-        });
+        let entry = self
+            .tracks
+            .entry(obs.icao24)
+            .or_insert_with(|| TrackInternal {
+                position: None,
+                event_time_ms: event_ms,
+                selected_source: None,
+                selection_reason: SelectionReason::None,
+                evidence: Vec::new(),
+            });
 
         // Prune evidence older than this event time so the retained set reflects
         // the current decision point (bounded memory, A11).
-        entry.evidence.retain(|e| e.event_time_ms >= event_ms.saturating_sub(2_000));
+        entry
+            .evidence
+            .retain(|e| e.event_time_ms >= event_ms.saturating_sub(2_000));
         entry.evidence.push(evidence);
 
         // Only move the position if this source was selected.
@@ -262,8 +266,7 @@ impl FusionEngine {
     /// For G02 dateline tests: how far two retained positions are apart.
     pub fn evidence_spread_m(&self, icao24: &Icao24) -> Option<f64> {
         let t = self.tracks.get(icao24)?;
-        let positions: Vec<Geodetic> =
-            t.evidence.iter().filter_map(|e| e.position).collect();
+        let positions: Vec<Geodetic> = t.evidence.iter().filter_map(|e| e.position).collect();
         if positions.len() < 2 {
             return Some(0.0);
         }
@@ -309,8 +312,14 @@ mod tests {
     #[test]
     fn single_source_updates_and_advances_watermark() {
         let mut e = engine();
-        assert_eq!(e.ingest(&obs("rx", 51.0, 0.0, 1_000)), FusionOutcome::Updated);
-        assert_eq!(e.ingest(&obs("rx", 51.0, 0.03, 11_000)), FusionOutcome::Updated);
+        assert_eq!(
+            e.ingest(&obs("rx", 51.0, 0.0, 1_000)),
+            FusionOutcome::Updated
+        );
+        assert_eq!(
+            e.ingest(&obs("rx", 51.0, 0.03, 11_000)),
+            FusionOutcome::Updated
+        );
         assert_eq!(e.watermark_ms(), 11_000);
         assert_eq!(e.count_updated, 2);
     }
@@ -323,12 +332,14 @@ mod tests {
         // the position must be exactly the owned one, not an average.
         e.ingest(&obs("remote", 10.0, 10.0, 1_000));
         e.ingest(&obs("rx", 20.0, 20.0, 1_000));
-        let snap = e.snapshot(&Icao24::parse_hex("4ca7b3").unwrap(), 1_000).unwrap();
+        let snap = e
+            .snapshot(&Icao24::parse_hex("4ca7b3").unwrap(), 1_000)
+            .unwrap();
         assert_eq!(snap.selected_source.as_deref(), Some("rx"));
         assert_eq!(snap.selection_reason, SelectionReason::HigherTrust);
         let p = snap.position.unwrap();
         assert!((p.lat_deg - 20.0).abs() < 1e-9); // exactly owned, not 15.0
-        // Both evidences retained.
+                                                  // Both evidences retained.
         assert_eq!(snap.evidence.len(), 2);
     }
 
@@ -339,11 +350,16 @@ mod tests {
         let out = e.ingest(&obs("rx", -30.0, 150.0, 2_000));
         assert_eq!(out, FusionOutcome::Rejected(Plausibility::ImpossibleJump));
         assert_eq!(e.count_rejected, 1);
-        let snap = e.snapshot(&Icao24::parse_hex("4ca7b3").unwrap(), 2_000).unwrap();
+        let snap = e
+            .snapshot(&Icao24::parse_hex("4ca7b3").unwrap(), 2_000)
+            .unwrap();
         // Position unchanged from the plausible first observation.
         assert!((snap.position.unwrap().lon_deg - 0.0).abs() < 1e-9);
         // The rejected evidence is still retained for inspection.
-        assert!(snap.evidence.iter().any(|ev| ev.plausibility == Plausibility::ImpossibleJump));
+        assert!(snap
+            .evidence
+            .iter()
+            .any(|ev| ev.plausibility == Plausibility::ImpossibleJump));
     }
 
     #[test]

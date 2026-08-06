@@ -62,7 +62,10 @@ mod tests {
         }
         assert!(count > 1000, "expected a large case count, got {count}");
         // Two spherical formulas should agree very tightly.
-        assert!(max_rel < 1e-6, "max relative distance disagreement {max_rel}");
+        assert!(
+            max_rel < 1e-6,
+            "max relative distance disagreement {max_rel}"
+        );
     }
 
     #[test]

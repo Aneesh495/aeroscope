@@ -79,14 +79,46 @@ fn run_acceptance(args: &[String]) {
     // Honest gate claims: the known-truth gates can pass on the pilot; the
     // resource-gated capacity/live/frontend gates are not certified here.
     e.claims = vec![
-        claim("G01", GateStatus::Blocked, "no authorized live feed in this environment; replay cannot satisfy G01"),
-        claim("G02", GateStatus::Passed, "independent geo recompute agrees to metre tolerance (see verify)"),
-        claim("G03", GateStatus::Passed, "seeded duplication/lateness/rejection counts reproduce exactly"),
-        claim("G04", GateStatus::Unverified, "full 6h/50k/200-sub profile not executed; pilot only"),
-        claim("G05", GateStatus::Unverified, "latency measured only on bounded pilot, not the full host"),
-        claim("G06", GateStatus::Unverified, "no pinned-GPU 20k-glyph frame trace in this environment"),
-        claim("G07", GateStatus::Passed, "stale/unknown states driven by declared lifecycle horizons"),
-        claim("G13", GateStatus::Passed, "independent verifier recomputes and rejects tampered bundles"),
+        claim(
+            "G01",
+            GateStatus::Blocked,
+            "no authorized live feed in this environment; replay cannot satisfy G01",
+        ),
+        claim(
+            "G02",
+            GateStatus::Passed,
+            "independent geo recompute agrees to metre tolerance (see verify)",
+        ),
+        claim(
+            "G03",
+            GateStatus::Passed,
+            "seeded duplication/lateness/rejection counts reproduce exactly",
+        ),
+        claim(
+            "G04",
+            GateStatus::Unverified,
+            "full 6h/50k/200-sub profile not executed; pilot only",
+        ),
+        claim(
+            "G05",
+            GateStatus::Unverified,
+            "latency measured only on bounded pilot, not the full host",
+        ),
+        claim(
+            "G06",
+            GateStatus::Unverified,
+            "no pinned-GPU 20k-glyph frame trace in this environment",
+        ),
+        claim(
+            "G07",
+            GateStatus::Passed,
+            "stale/unknown states driven by declared lifecycle horizons",
+        ),
+        claim(
+            "G13",
+            GateStatus::Passed,
+            "independent verifier recomputes and rejects tampered bundles",
+        ),
     ];
 
     let path = dir.join("ACCEPTANCE.json");
@@ -96,9 +128,15 @@ fn run_acceptance(args: &[String]) {
 }
 
 fn claim(gate: &str, status: GateStatus, detail: &str) -> GateClaim {
-    GateClaim { gate: gate.into(), status, detail: detail.into() }
+    GateClaim {
+        gate: gate.into(),
+        status,
+        detail: detail.into(),
+    }
 }
 
 fn flag(args: &[String], name: &str) -> Option<String> {
-    args.iter().position(|a| a == name).and_then(|i| args.get(i + 1).cloned())
+    args.iter()
+        .position(|a| a == name)
+        .and_then(|i| args.get(i + 1).cloned())
 }

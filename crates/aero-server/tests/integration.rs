@@ -92,7 +92,10 @@ fn viewport_subscription_sees_only_in_view_tracks() {
         aero_stream::ServerMessage::Snapshot(s) => s.tracks.len(),
         _ => panic!("expected snapshot"),
     };
-    assert!(in_view < 1000, "viewport should bound the result, got {in_view}");
+    assert!(
+        in_view < 1000,
+        "viewport should bound the result, got {in_view}"
+    );
 
     // The whole-globe viewport should see all indexed tracks.
     let (_, snap_all) = pipe.subscribe(Viewport::new(-90.0, 90.0, -180.0, 179.999), now);

@@ -64,14 +64,21 @@ pub struct Delta {
 #[serde(tag = "type")]
 pub enum ServerMessage {
     /// Negotiated protocol version and the subscription id.
-    Welcome { version: u16, subscription_id: u64 },
+    Welcome {
+        version: u16,
+        subscription_id: u64,
+    },
     Snapshot(Snapshot),
     Delta(Delta),
     /// Sent when the server must drop a slow consumer's backlog; the client
     /// should expect a fresh snapshot next and discard its state.
-    ResyncRequired { reason: String },
+    ResyncRequired {
+        reason: String,
+    },
     /// Version negotiation failed.
-    Unsupported { server_versions: Vec<u16> },
+    Unsupported {
+        server_versions: Vec<u16>,
+    },
 }
 
 /// Messages from client to server.
@@ -87,19 +94,20 @@ pub enum ClientMessage {
         east_lon: f64,
     },
     /// Acknowledge receipt up to and including this sequence number.
-    Ack { seq: Seq },
+    Ack {
+        seq: Seq,
+    },
     /// Reconnect declaring the last snapshot id and seq the client holds.
-    Resume { last_snapshot_id: SnapshotId, last_seq: Seq },
+    Resume {
+        last_snapshot_id: SnapshotId,
+        last_seq: Seq,
+    },
     Unsubscribe,
 }
 
 /// Negotiate the highest version the server and client both support.
 pub fn negotiate(server: &[u16], client: &[u16]) -> Option<u16> {
-    server
-        .iter()
-        .filter(|v| client.contains(v))
-        .copied()
-        .max()
+    server.iter().filter(|v| client.contains(v)).copied().max()
 }
 
 /// Forward-compatibility: unknown fields in a client message must not crash the

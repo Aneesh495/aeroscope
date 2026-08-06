@@ -14,10 +14,6 @@ pub mod capability;
 pub mod opensky;
 pub mod readsb;
 
-pub use capability::{
-    CapabilityRegistry, FeatureSupport, GeographicLimit, ProviderCapability,
-};
-pub use opensky::{
-    parse_states_all, CachedToken, HttpTransport, OpenSkyClient, OperationalGuard,
-};
+pub use capability::{CapabilityRegistry, FeatureSupport, GeographicLimit, ProviderCapability};
+pub use opensky::{parse_states_all, CachedToken, HttpTransport, OpenSkyClient, OperationalGuard};
 pub use readsb::{parse_readsb, ReadsbParse, MAX_DOC_BYTES};

@@ -89,16 +89,8 @@ impl LoadGenerator {
         let mut fleet = Vec::with_capacity(cfg.aircraft_count);
         for i in 0..cfg.aircraft_count {
             // Globally distributed endpoints.
-            let origin = Geodetic::new(
-                rng.range(-80.0, 80.0),
-                rng.range(-180.0, 180.0),
-                0.0,
-            );
-            let dest = Geodetic::new(
-                rng.range(-80.0, 80.0),
-                rng.range(-180.0, 180.0),
-                0.0,
-            );
+            let origin = Geodetic::new(rng.range(-80.0, 80.0), rng.range(-180.0, 180.0), 0.0);
+            let dest = Geodetic::new(rng.range(-80.0, 80.0), rng.range(-180.0, 180.0), 0.0);
             // ICAO24 derived deterministically from the index.
             let bytes = [(i >> 16) as u8, (i >> 8) as u8, (i as u8).max(1)];
             let speed_mps = rng.range(200.0, 260.0);
@@ -189,8 +181,16 @@ mod tests {
 
     #[test]
     fn fleet_is_global_and_reproducible() {
-        let a = LoadGenerator::new(LoadGenConfig { aircraft_count: 500, seed: 9, ..Default::default() });
-        let b = LoadGenerator::new(LoadGenConfig { aircraft_count: 500, seed: 9, ..Default::default() });
+        let a = LoadGenerator::new(LoadGenConfig {
+            aircraft_count: 500,
+            seed: 9,
+            ..Default::default()
+        });
+        let b = LoadGenerator::new(LoadGenConfig {
+            aircraft_count: 500,
+            seed: 9,
+            ..Default::default()
+        });
         assert_eq!(a.fleet.len(), 500);
         // Same seed -> identical fleet endpoints.
         for (x, y) in a.fleet.iter().zip(b.fleet.iter()) {
@@ -235,7 +235,11 @@ mod tests {
 
     #[test]
     fn true_position_moves_over_time() {
-        let g = LoadGenerator::new(LoadGenConfig { aircraft_count: 1, seed: 11, ..Default::default() });
+        let g = LoadGenerator::new(LoadGenConfig {
+            aircraft_count: 1,
+            seed: 11,
+            ..Default::default()
+        });
         let ac = &g.fleet[0];
         let p0 = ac.true_position(0.0);
         let p1 = ac.true_position(ac.leg_duration_s * 0.25);

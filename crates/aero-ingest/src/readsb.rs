@@ -69,12 +69,11 @@ struct ReadsbAircraft {
 /// Parse a readsb document into normalized observations. The `source` names the
 /// receiver so attribution survives fusion. Malformed aircraft entries are
 /// returned as errors for quarantine; a single bad entry does not fail the doc.
-pub fn parse_readsb(
-    bytes: &[u8],
-    source: &SourceId,
-) -> Result<ReadsbParse, IngestError> {
+pub fn parse_readsb(bytes: &[u8], source: &SourceId) -> Result<ReadsbParse, IngestError> {
     if bytes.len() > MAX_DOC_BYTES {
-        return Err(IngestError::OversizedRecord { limit: MAX_DOC_BYTES });
+        return Err(IngestError::OversizedRecord {
+            limit: MAX_DOC_BYTES,
+        });
     }
     let doc: ReadsbDoc = serde_json::from_slice(bytes)
         .map_err(|e| IngestError::Malformed(format!("readsb doc: {e}")))?;
@@ -91,7 +90,10 @@ pub fn parse_readsb(
             Err(e) => rejected.push((ac.hex.clone(), e.to_string())),
         }
     }
-    Ok(ReadsbParse { observations, rejected })
+    Ok(ReadsbParse {
+        observations,
+        rejected,
+    })
 }
 
 /// Result of parsing one readsb document.
@@ -176,10 +178,7 @@ fn normalize_aircraft(
         }
     });
     // Prefer geometric vertical rate when present, else barometric.
-    let vertical_rate = ac
-        .geom_rate
-        .or(ac.baro_rate)
-        .map(VerticalRateMps::from_fpm);
+    let vertical_rate = ac.geom_rate.or(ac.baro_rate).map(VerticalRateMps::from_fpm);
 
     let _ = baro_from_tag; // documented above; kept for clarity of branches
 
@@ -203,7 +202,10 @@ fn normalize_aircraft(
 
 fn check_range(field: &'static str, v: f64, lo: f64, hi: f64) -> Result<(), IngestError> {
     if !v.is_finite() || v < lo || v > hi {
-        return Err(IngestError::OutOfRange { field, detail: format!("{v}") });
+        return Err(IngestError::OutOfRange {
+            field,
+            detail: format!("{v}"),
+        });
     }
     Ok(())
 }

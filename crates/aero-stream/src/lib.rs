@@ -11,7 +11,7 @@ pub mod protocol;
 pub mod subscription;
 
 pub use protocol::{
-    negotiate, parse_client_message, ClientMessage, Delta, ServerMessage, Snapshot, SnapshotId,
-    Seq, TrackWire, PROTOCOL_VERSION,
+    negotiate, parse_client_message, ClientMessage, Delta, Seq, ServerMessage, Snapshot,
+    SnapshotId, TrackWire, PROTOCOL_VERSION,
 };
 pub use subscription::{QueuePolicy, Subscription};

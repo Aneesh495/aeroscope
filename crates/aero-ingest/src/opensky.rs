@@ -41,7 +41,10 @@ impl OperationalGuard {
     /// Enable operational use only when the deployment truly has the agreement.
     /// This is a deliberate, explicit, auditable call.
     pub fn with_signed_agreement() -> Self {
-        Self { agreement_acknowledged: true, reason_if_disabled: String::new() }
+        Self {
+            agreement_acknowledged: true,
+            reason_if_disabled: String::new(),
+        }
     }
     pub fn is_enabled(&self) -> bool {
         self.agreement_acknowledged
@@ -132,8 +135,8 @@ impl<H: HttpTransport> OpenSkyClient<H> {
             ];
             match self.http.post_form(&self.token_url, &form) {
                 Ok((200, body)) => {
-                    let tr: TokenResponse = serde_json::from_str(&body)
-                        .map_err(|e| format!("token parse: {e}"))?;
+                    let tr: TokenResponse =
+                        serde_json::from_str(&body).map_err(|e| format!("token parse: {e}"))?;
                     let cached = CachedToken {
                         token: tr.access_token,
                         expires_at_ms: now_ms + (tr.expires_in as i64) * 1000,
@@ -148,7 +151,9 @@ impl<H: HttpTransport> OpenSkyClient<H> {
                     let _ = code;
                     continue;
                 }
-                Ok((code, _)) => return Err(format!("token endpoint failed after retries: {code}")),
+                Ok((code, _)) => {
+                    return Err(format!("token endpoint failed after retries: {code}"))
+                }
                 Err(e) if attempt < self.max_token_retries => {
                     let _ = e;
                     continue;
@@ -180,7 +185,11 @@ pub fn parse_states_all(
     }
     let parsed: StatesAll = serde_json::from_str(body)
         .map_err(|e| IngestError::Malformed(format!("states/all: {e}")))?;
-    let publish_ms = if parsed.time > 0 { Some(parsed.time * 1000) } else { None };
+    let publish_ms = if parsed.time > 0 {
+        Some(parsed.time * 1000)
+    } else {
+        None
+    };
 
     let mut out = Vec::new();
     for s in parsed.states.unwrap_or_default() {
@@ -278,8 +287,16 @@ mod tests {
 
     #[test]
     fn disabled_guard_blocks_without_network() {
-        let http = MockHttp { token_responses: RefCell::new(vec![]) };
-        let mut c = OpenSkyClient::new(http, "https://t", "id", "secret", OperationalGuard::default());
+        let http = MockHttp {
+            token_responses: RefCell::new(vec![]),
+        };
+        let mut c = OpenSkyClient::new(
+            http,
+            "https://t",
+            "id",
+            "secret",
+            OperationalGuard::default(),
+        );
         let err = c.ensure_token(1_000).unwrap_err();
         assert!(err.contains("disabled"));
         assert!(err.contains("agreement"));
@@ -294,7 +311,10 @@ mod tests {
             ]),
         };
         let mut c = OpenSkyClient::new(
-            http, "https://t", "id", "secret",
+            http,
+            "https://t",
+            "id",
+            "secret",
             OperationalGuard::with_signed_agreement(),
         );
         let now = 1_000_000;
@@ -315,7 +335,10 @@ mod tests {
             ]),
         };
         let mut c = OpenSkyClient::new(
-            http, "https://t", "id", "secret",
+            http,
+            "https://t",
+            "id",
+            "secret",
             OperationalGuard::with_signed_agreement(),
         );
         assert_eq!(c.ensure_token(0).unwrap(), "ok");
@@ -327,7 +350,10 @@ mod tests {
             token_responses: RefCell::new(vec![Ok((401, "no".into()))]),
         };
         let mut c = OpenSkyClient::new(
-            http, "https://t", "id", "secret",
+            http,
+            "https://t",
+            "id",
+            "secret",
             OperationalGuard::with_signed_agreement(),
         );
         assert!(c.ensure_token(0).unwrap_err().contains("401"));

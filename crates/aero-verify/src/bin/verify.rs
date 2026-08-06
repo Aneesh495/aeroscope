@@ -33,12 +33,19 @@ fn main() {
     };
 
     println!("verifying evidence bundle: {}", path.display());
-    println!("  run_id={} profile={} seed={} fleet={} ticks={}",
-        e.run_id, e.profile, e.seed, e.aircraft_count, e.ticks);
+    println!(
+        "  run_id={} profile={} seed={} fleet={} ticks={}",
+        e.run_id, e.profile, e.seed, e.aircraft_count, e.ticks
+    );
 
     let (ok, results) = verify(&e);
     for r in &results {
-        println!("  [{}] {}: {}", if r.ok { "PASS" } else { "FAIL" }, r.name, r.reason);
+        println!(
+            "  [{}] {}: {}",
+            if r.ok { "PASS" } else { "FAIL" },
+            r.name,
+            r.reason
+        );
     }
 
     // Report claimed gate statuses transparently (not trusted for decisive
@@ -57,5 +64,7 @@ fn main() {
 }
 
 fn flag(args: &[String], name: &str) -> Option<String> {
-    args.iter().position(|a| a == name).and_then(|i| args.get(i + 1).cloned())
+    args.iter()
+        .position(|a| a == name)
+        .and_then(|i| args.get(i + 1).cloned())
 }

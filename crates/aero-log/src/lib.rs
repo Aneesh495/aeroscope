@@ -23,7 +23,7 @@
 mod crc32;
 pub mod record;
 
-pub use record::{LoggedObservation, DedupKey};
+pub use record::{DedupKey, LoggedObservation};
 
 use crc32::crc32;
 use std::collections::HashSet;
@@ -67,6 +67,9 @@ impl ObservationLog {
             .read(true)
             .write(true)
             .create(true)
+            // We manage truncation explicitly below via set_len so an existing
+            // log is never wiped on open; be explicit so the intent is clear.
+            .truncate(false)
             .open(&path)?;
         // Truncate any torn tail beyond the last intact record.
         file.set_len(intact_len)?;
@@ -122,14 +125,9 @@ impl ObservationLog {
         let f = File::open(&self.path)?;
         let mut reader = BufReader::new(f);
         let mut out = Vec::new();
-        loop {
-            match Self::read_frame(&mut reader)? {
-                Some(payload) => {
-                    let obs: LoggedObservation = serde_json::from_slice(&payload)?;
-                    out.push(obs);
-                }
-                None => break,
-            }
+        while let Some(payload) = Self::read_frame(&mut reader)? {
+            let obs: LoggedObservation = serde_json::from_slice(&payload)?;
+            out.push(obs);
         }
         Ok(out)
     }
@@ -151,11 +149,7 @@ impl ObservationLog {
         let f = File::open(path)?;
         let mut reader = BufReader::new(f);
         let mut intact: u64 = 0;
-        loop {
-            let frame_len = match Self::probe_frame(&mut reader)? {
-                Some(n) => n,
-                None => break,
-            };
+        while let Some(frame_len) = Self::probe_frame(&mut reader)? {
             intact += frame_len as u64;
         }
         Ok(intact)
@@ -260,7 +254,10 @@ mod tests {
         assert_eq!(log.count(), 2);
         // Dedup index rebuilt: a reopened log still rejects a known key.
         let mut log = log;
-        assert!(matches!(log.append(&obs(1, 1000)), Err(LogError::Duplicate)));
+        assert!(matches!(
+            log.append(&obs(1, 1000)),
+            Err(LogError::Duplicate)
+        ));
     }
 
     #[test]

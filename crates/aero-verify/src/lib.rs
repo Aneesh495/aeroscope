@@ -134,7 +134,8 @@ pub fn replay_and_compare(e: &Evidence) -> CheckResult {
 
     // Reproduce dedup at the log layer with the same key the log uses.
     let mut seen: HashSet<(String, [u8; 3], i64, u8)> = HashSet::new();
-    let (mut updated, mut late, mut rejected, mut logged, mut dups) = (0u64, 0u64, 0u64, 0u64, 0u64);
+    let (mut updated, mut late, mut rejected, mut logged, mut dups) =
+        (0u64, 0u64, 0u64, 0u64, 0u64);
     let base_ms = 1_730_000_000_000i64;
 
     for t in 0..e.ticks {
@@ -230,8 +231,10 @@ mod tests {
         e.fusion_updated += 1000;
         let (ok, results) = verify(&e);
         assert!(!ok);
-        assert!(results.iter().any(|r| !r.ok && r.name == "fusion_accounting"
-            || !r.ok && r.name == "bounded_replay_matches_claims"));
+        assert!(results
+            .iter()
+            .any(|r| !r.ok && r.name == "fusion_accounting"
+                || !r.ok && r.name == "bounded_replay_matches_claims"));
     }
 
     #[test]

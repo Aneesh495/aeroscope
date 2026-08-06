@@ -75,13 +75,22 @@ pub struct Enriched<T> {
 
 impl<T> Enriched<T> {
     pub fn authoritative(v: T) -> Self {
-        Self { value: Some(v), provenance: Provenance::Authoritative }
+        Self {
+            value: Some(v),
+            provenance: Provenance::Authoritative,
+        }
     }
     pub fn inferred(v: T) -> Self {
-        Self { value: Some(v), provenance: Provenance::Inferred }
+        Self {
+            value: Some(v),
+            provenance: Provenance::Inferred,
+        }
     }
     pub fn absent() -> Self {
-        Self { value: None, provenance: Provenance::Absent }
+        Self {
+            value: None,
+            provenance: Provenance::Absent,
+        }
     }
 }
 

@@ -42,8 +42,8 @@ pub struct Pipeline {
 
 impl Pipeline {
     pub fn open(log_path: &str, trust: SourceTrust, is_replay: bool) -> std::io::Result<Self> {
-        let log = ObservationLog::open(log_path)
-            .map_err(|e| std::io::Error::other(e.to_string()))?;
+        let log =
+            ObservationLog::open(log_path).map_err(|e| std::io::Error::other(e.to_string()))?;
         Ok(Self {
             log,
             fusion: FusionEngine::new(trust, LifecycleConfig::default(), 2_000),
@@ -141,7 +141,10 @@ impl Pipeline {
     pub fn live_track_count(&self, now_ms: i64) -> usize {
         let mut n = 0;
         // Iterate indexed tracks and classify.
-        for hex in self.grid.query(&Viewport::new(-90.0, 90.0, -180.0, 179.999)) {
+        for hex in self
+            .grid
+            .query(&Viewport::new(-90.0, 90.0, -180.0, 179.999))
+        {
             if let Some(id) = Icao24::parse_hex(&hex) {
                 if let Some(s) = self.fusion.snapshot(&id, now_ms) {
                     if matches!(s.state, TrackState::Observed | TrackState::Extrapolated) {
@@ -187,12 +190,20 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("aero-pl-{}", std::process::id()));
         let _ = std::fs::create_dir_all(&dir);
         let path = dir.join(format!("log-{}.aero", rand_suffix()));
-        Pipeline::open(path.to_str().unwrap(), SourceTrust::default().with("rx", 10), false).unwrap()
+        Pipeline::open(
+            path.to_str().unwrap(),
+            SourceTrust::default().with("rx", 10),
+            false,
+        )
+        .unwrap()
     }
 
     fn rand_suffix() -> u64 {
         use std::time::{SystemTime, UNIX_EPOCH};
-        SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as u64
+        SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos() as u64
     }
 
     #[test]

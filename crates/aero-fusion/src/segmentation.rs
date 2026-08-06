@@ -39,7 +39,10 @@ pub struct SegmentationConfig {
 
 impl Default for SegmentationConfig {
     fn default() -> Self {
-        Self { max_gap_ms: 600_000, ground_dwell_ms: 300_000 }
+        Self {
+            max_gap_ms: 600_000,
+            ground_dwell_ms: 300_000,
+        }
     }
 }
 

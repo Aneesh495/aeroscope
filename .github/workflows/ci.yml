@@ -1,0 +1,72 @@
+name: ci
+
+# Lightweight CI on ordinary pushes: build, static checks, deterministic
+# correctness tests, a real integration path, and the verifier negative
+# control. This does NOT certify the full resource-heavy acceptance campaign;
+# that runs separately on a declared reference host.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: Format check
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --workspace -- -D warnings
+      - name: Build
+        run: cargo build --workspace
+      - name: Test
+        run: cargo test --workspace
+      - name: Verifier negative control
+        run: |
+          set -e
+          rm -rf evidence/ci
+          cargo run -q --release -p aero-verify --bin aero-campaign -- \
+            acceptance --run-id ci --evidence evidence/ci
+          # A clean bundle must verify.
+          cargo run -q --release -p aero-verify --bin aero-verify -- --evidence evidence/ci
+          # A tampered bundle must be rejected (exit nonzero).
+          cp -r evidence/ci evidence/ci-bad
+          python3 - <<'PY'
+          import json
+          f = "evidence/ci-bad/ACCEPTANCE.json"
+          d = json.load(open(f))
+          d["fusion_updated"] += 1000
+          json.dump(d, open(f, "w"))
+          PY
+          if cargo run -q --release -p aero-verify --bin aero-verify -- --evidence evidence/ci-bad; then
+            echo "ERROR: verifier accepted a tampered bundle"; exit 1
+          else
+            echo "OK: verifier rejected the tampered bundle"
+          fi
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Unit tests
+        run: npx vitest run

@@ -42,8 +42,16 @@ mod tests {
     #[test]
     fn derived_constants_match_published_values() {
         // b ~= 6356752.3142 m
-        assert!((Wgs84::b() - 6_356_752.314_2).abs() < 1e-3, "b = {}", Wgs84::b());
+        assert!(
+            (Wgs84::b() - 6_356_752.314_2).abs() < 1e-3,
+            "b = {}",
+            Wgs84::b()
+        );
         // e^2 ~= 0.00669437999014
-        assert!((Wgs84::e2() - 0.006_694_379_990_14).abs() < 1e-12, "e2 = {}", Wgs84::e2());
+        assert!(
+            (Wgs84::e2() - 0.006_694_379_990_14).abs() < 1e-12,
+            "e2 = {}",
+            Wgs84::e2()
+        );
     }
 }

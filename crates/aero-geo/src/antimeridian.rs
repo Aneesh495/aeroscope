@@ -79,9 +79,15 @@ mod tests {
         let segs = split_at_antimeridian(&a, &b);
         assert_eq!(segs.len(), 2);
         // First segment ends on +180, second starts on -180.
-        assert!((segs[0].1.lon_deg - (-180.0)).abs() < 1e-9 || (segs[0].1.lon_deg - 180.0).abs() < 1e-9);
+        assert!(
+            (segs[0].1.lon_deg - (-180.0)).abs() < 1e-9 || (segs[0].1.lon_deg - 180.0).abs() < 1e-9
+        );
         // Crossing latitude is the midpoint for this symmetric case (15 deg).
-        assert!((segs[0].1.lat_deg - 15.0).abs() < 1e-6, "lat {}", segs[0].1.lat_deg);
+        assert!(
+            (segs[0].1.lat_deg - 15.0).abs() < 1e-6,
+            "lat {}",
+            segs[0].1.lat_deg
+        );
     }
 
     #[test]
